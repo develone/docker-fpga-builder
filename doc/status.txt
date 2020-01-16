@@ -66,7 +66,8 @@ vidal@ws009:~/docker-fpga-builder$ docker run --rm -it docker-fpga-builder:lates
     2  cd Test-Docker-FPGA-Builder
     3  cd catzip
     5  rm -f catzip.asc catzip.blif catzip.bin
-   38  nextpnr-ice40 --seed 8 --freq 40 --hx8k --pcf catzip.pcf --json catzip.json --asc catzip.asc
+    yosys -ql 'synth_ice40 -blif catzip.blif -json catzip.json -top toplevel' toplevel.v
+   38  q
    40  icepack catzip.asc catzip.bin
    42  icetime -d hx8k -c 40 catzip.asc
    icetime -d hx8k -c 40 catzip.asc
