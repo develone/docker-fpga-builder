@@ -1,4 +1,55 @@
-Created a Docker image
+Background:
+The cross compiling of yosys tools.  Should not have been my goal with docker or yocto.
+Since, a project catzip, for instance has 10 or more bin files that need to be created.
+A docker image, which has the yocto tools built, could be used to create the 10 or more bin files in separate containers.  
+
+The toolbelt is a utility to run tools for testing and building of software modules. 
+The tools are run in an dockerized environment where toolchains and frameworks are 
+installed, and thus removes the need to install compilers and so on on your local system.
+
+These are the repos "https://github.com/develone/docker-fpga-builder" and
+"https://github.com/bitcraze/toolbelt"
+
+As of 01/15/20
+The steps below were used to install docker on Ubuntu AMD x86_64 system.
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update
+apt-cache policy docker-ce
+sudo apt-get install -y docker-ce
+
+sudo systemctl status docker
+
+sudo usermod -aG docker ${USER}
+
+Created a Docker image on Ubuntu AMD x86_64 system.
+Client: Docker Engine - Community
+ Version:           19.03.5
+ API version:       1.40
+ Go version:        go1.12.12
+ Git commit:        633a0ea838
+ Built:             Wed Nov 13 07:50:12 2019
+ OS/Arch:           linux/amd64
+ Experimental:      false
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          19.03.5
+  API version:      1.40 (minimum version 1.12)
+  Go version:       go1.12.12
+  Git commit:       633a0ea838
+  Built:            Wed Nov 13 07:48:43 2019
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.2.10
+  GitCommit:        b34a5c8af56e510852c35414db4c1f4fa6172339
+ runc:
+  Version:          1.0.0-rc8+dev
+  GitCommit:        3e425f80a8c931f88e6d94a8c831b9d5aa481657
+ docker-init:
+  Version:          0.18.0
+  GitCommit:        fec3683
 
 git clone https://github.com/develone/docker-fpga-builder.git
 cd docker-fpga-builder/src
