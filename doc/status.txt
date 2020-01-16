@@ -61,48 +61,30 @@ which in this case 395 packages plus yosyse, icestorm, and nextpnr.
 vidal@ws009:~/docker-fpga-builder/src$ docker run --rm -it docker-fpga-builder:latest
 
 Testing nextpnr, icepack, and icetime.
-vidal@ws009:~/docker-fpga-builder$ docker run --rm -it docker-fpga-builder:latest
-    1  git clone https://github.com/develone/Test-Docker-FPGA-Builder.git
-    2  cd Test-Docker-FPGA-Builder
-    3  cd catzip
-    5  rm -f catzip.asc catzip.blif catzip.bin
-    yosys -ql 'synth_ice40 -blif catzip.blif -json catzip.json -top toplevel' toplevel.v
-   38  q
-   40  icepack catzip.asc catzip.bin
-   42  icetime -d hx8k -c 40 catzip.asc
-   icetime -d hx8k -c 40 catzip.asc
-// Reading input .asc file..
-// Reading 8k chipdb file..
-// Creating timing netlist..
-// Timing estimate: 14.82 ns (67.47 MHz)
-// Checking 25.00 ns (40.00 MHz) clock constraint: PASSED.
-   43  scp catzip.bin devel@192.168.1.69:~/
-   44  md5sum catzip.bin	
-   a17fef98a9a77a2d02da42d899c495a6  catzip.bin!
 
-nextpnr-ice40 --seed 8 --freq 40 --hx8k --pcf catzip.pcf --json catzip.json --asc catzip.asc
-
+git clone https://github.com/develone/Test-Docker-FPGA-Builder.git
+cd Test-Docker-FPGA-Builder
+time ./build-catzip-bin.sh
 3 warnings, 0 errors
-root@6263cbe47486:/module/Test-Docker-FPGA-Builder/catzip# git status | less
-root@6263cbe47486:/module/Test-Docker-FPGA-Builder/catzip# icepack catzip.asc catzip.bin
-root@6263cbe47486:/module/Test-Docker-FPGA-Builder/catzip# git status | less
-root@6263cbe47486:/module/Test-Docker-FPGA-Builder/catzip# icetime -d hx8k -c 40 catzip.asc
 // Reading input .asc file..
 // Reading 8k chipdb file..
 // Creating timing netlist..
 // Timing estimate: 14.82 ns (67.47 MHz)
 // Checking 25.00 ns (40.00 MHz) clock constraint: PASSED.
-root@6263cbe47486:/module/Test-Docker-FPGA-Builder/catzip# scp catzip.bin devel@192.168.1.69:~/
+
+real	6m12.682s
+user	6m12.076s
+sys	0m0.328s
+root@e7836b6c47e9:/module/Test-Docker-FPGA-Builder# scp catzip/catzip.bin devel@192.168.1.69:~/
 The authenticity of host '192.168.1.69 (192.168.1.69)' can't be established.
 ECDSA key fingerprint is SHA256:Bbi9VZShq4oPPLO/2sdVWLqT9dfufvoWSumdyGevmZk.
 Are you sure you want to continue connecting (yes/no)? yes
 Warning: Permanently added '192.168.1.69' (ECDSA) to the list of known hosts.
 devel@192.168.1.69's password: 
-catzip.bin                                    100%  132KB 131.9KB/s   00:00    
-root@6263cbe47486:/module/Test-Docker-FPGA-Builder/catzip# md5sum catzip.bin 
-a17fef98a9a77a2d02da42d899c495a6  catzip.bin
-
-
+catzip.bin                                    100%  132KB 131.9KB/s   00:00
+root@e7836b6c47e9:/module/Test-Docker-FPGA-Builder# md5sum catzip/catzip.bin 
+a17fef98a9a77a2d02da42d899c495a6  catzip/catzip.bin
+ 
 devel@mypi3-16:~/testbuilds/catzip/sw/host $ sudo config_cat ../../rtl/catzip/catzip.bin 
 
 GPIO 25 not exported, trying to export...
