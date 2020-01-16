@@ -1,0 +1,95 @@
+Created a Docker image
+
+git clone https://github.com/develone/docker-fpga-builder.git
+cd docker-fpga-builder/src
+./build.sh
+Run the image in a container. The container has a ubuntu system 
+with the software installed from the Dockerfile
+which in this case 395 packages plus yosyse, icestorm, and nextpnr.
+
+vidal@ws009:~/docker-fpga-builder/src$ docker run --rm -it docker-fpga-builder:latest
+
+Testing nextpnr, icepack, and icetime.
+vidal@ws009:~/docker-fpga-builder$ docker run --rm -it docker-fpga-builder:latest
+    1  git clone https://github.com/develone/Test-Docker-FPGA-Builder.git
+    2  cd Test-Docker-FPGA-Builder
+    3  cd catzip
+    5  rm -f catzip.asc catzip.blif catzip.bin
+   38  nextpnr-ice40 --seed 8 --freq 40 --hx8k --pcf catzip.pcf --json catzip.json --asc catzip.asc
+   40  icepack catzip.asc catzip.bin
+   42  icetime -d hx8k -c 40 catzip.asc
+   icetime -d hx8k -c 40 catzip.asc
+// Reading input .asc file..
+// Reading 8k chipdb file..
+// Creating timing netlist..
+// Timing estimate: 14.82 ns (67.47 MHz)
+// Checking 25.00 ns (40.00 MHz) clock constraint: PASSED.
+   43  scp catzip.bin devel@192.168.1.69:~/
+   44  md5sum catzip.bin	
+   a17fef98a9a77a2d02da42d899c495a6  catzip.bin!
+
+nextpnr-ice40 --seed 8 --freq 40 --hx8k --pcf catzip.pcf --json catzip.json --asc catzip.asc
+
+3 warnings, 0 errors
+root@6263cbe47486:/module/Test-Docker-FPGA-Builder/catzip# git status | less
+root@6263cbe47486:/module/Test-Docker-FPGA-Builder/catzip# icepack catzip.asc catzip.bin
+root@6263cbe47486:/module/Test-Docker-FPGA-Builder/catzip# git status | less
+root@6263cbe47486:/module/Test-Docker-FPGA-Builder/catzip# icetime -d hx8k -c 40 catzip.asc
+// Reading input .asc file..
+// Reading 8k chipdb file..
+// Creating timing netlist..
+// Timing estimate: 14.82 ns (67.47 MHz)
+// Checking 25.00 ns (40.00 MHz) clock constraint: PASSED.
+root@6263cbe47486:/module/Test-Docker-FPGA-Builder/catzip# scp catzip.bin devel@192.168.1.69:~/
+The authenticity of host '192.168.1.69 (192.168.1.69)' can't be established.
+ECDSA key fingerprint is SHA256:Bbi9VZShq4oPPLO/2sdVWLqT9dfufvoWSumdyGevmZk.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '192.168.1.69' (ECDSA) to the list of known hosts.
+devel@192.168.1.69's password: 
+catzip.bin                                    100%  132KB 131.9KB/s   00:00    
+root@6263cbe47486:/module/Test-Docker-FPGA-Builder/catzip# md5sum catzip.bin 
+a17fef98a9a77a2d02da42d899c495a6  catzip.bin
+
+
+devel@mypi3-16:~/testbuilds/catzip/sw/host $ sudo config_cat ../../rtl/catzip/catzip.bin 
+
+GPIO 25 not exported, trying to export...
+GPIO 17 not exported, trying to export...
+GPIO 22 not exported, trying to export...
+
+OK: SPI driver loaded
+
+Setting GPIO directions
+out
+out
+in
+Setting output to low
+0
+Reseting FPGA
+0
+1
+Checking DONE pin
+0
+Continuing with configuration procedure
+263+1 records in
+263+1 records out
+135100 bytes (135 kB, 132 KiB) copied, 0.0215155 s, 6.3 MB/s
+Setting output to high
+1
+Checking DONE pin
+1
+
+devel@mypi3-16:~/testbuilds/catzip/sw/host $ ./arm-netpport 
+Listening on port 8363
+Listening on port 8364
+
+devel@mypi3-16:~/testbuilds/catzip/sw/host $ ./arm-wbregs version
+00800010 ( VERSION) : [....] 20200115
+
+devel@mypi3-16:~/testbuilds/catzip/sw/host $ ./runjpeg.sh
+
+devel@mypi3-16:~/testbuilds/catzip/sw/host $ octave
+
+ 
+   
+    
