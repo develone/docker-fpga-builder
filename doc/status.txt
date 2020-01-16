@@ -125,5 +125,20 @@ devel@mypi3-16:~/testbuilds/catzip/sw/host $ ./runjpeg.sh
 devel@mypi3-16:~/testbuilds/catzip/sw/host $ octave
 
  
+On Ubuntu ws009
+
+docker save docker-fpga-builder > docker-fpga-docker.tar
+
+md5sum docker-fpga-builder.tar 
+ff0bd56fc7bdf18e89edc5a521aa0b69  docker-fpga-builder.tar
+
+Transferred the docker-fpga-builder.tar to a Fedora 30 laptop 
+
+Create a docker image on Fedora 30 from a tar file.
+
+cat docker-fpga-docker.tar | docker load
+
+
+
    
     
