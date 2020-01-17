@@ -124,6 +124,7 @@ devel@mypi3-16:~/testbuilds/catzip/sw/host $ ./runjpeg.sh
 
 devel@mypi3-16:~/testbuilds/catzip/sw/host $ octave
 
+https://bobcares.com/blog/move-docker-container-to-another-host/
  
 On Ubuntu ws009
 
@@ -139,6 +140,37 @@ Create a docker image on Fedora 30 from a tar file.
 cat docker-fpga-docker.tar | docker load
 
 
+scp -r devel@192.168.1.69:~/testbuilds/catzip/rtl/leddigits .
+
+cd leddigits
+
+yosys -l simple.log -p 'synth_ice40 -blif leddigits.blif -json leddigits.json -top catboard' leddigits.v
+
+nextpnr-ice40 --seed 8 --freq 100 --hx8k --pcf leddigits.pcf --json leddigits.json --asc leddigits.asc
+
+Info: [ 21824,  22256) |*********+
+Info: [ 22256,  22688) |**********+
+Info: [ 22688,  23120) |************+
+Info: [ 23120,  23552) |************************************************************ 
+1 warning, 0 errors
+
+icepack leddigits.asc leddigits.bin
+root@179b92aa79dd:/module/leddigits# icetime -d hx8k -c 100 leddigits.asc
+// Reading input .asc file..
+// Reading 8k chipdb file..
+// Creating timing netlist..
+// Timing estimate: 9.96 ns (100.39 MHz)
+// Checking 10.00 ns (100.00 MHz) clock constraint: PASSED.
+
+root@179b92aa79dd:/module/leddigits# scp leddigits.bin devel@192.168.1.69:~/testbuilds/catzip/rtl/leddigits/ 
+devel@192.168.1.69's password: 
+Permission denied, please try again.
+devel@192.168.1.69's password: 
+leddigits.bin                                 100%  132KB 131.9KB/s   00:00    
+root@179b92aa79dd:/module/leddigits# md5sum leddigits.bin
+7245ed5a126a5b75b8120b6035ada23a  leddigits.bin
+devel@mypi3-16:~ $ md5sum testbuilds/catzip/rtl/leddigits/leddigits.bin
+7245ed5a126a5b75b8120b6035ada23a  testbuilds/catzip/rtl/leddigits/leddigits.bin
 
    
     
