@@ -6,21 +6,21 @@ RUN apt-get update && apt-get install -y build-essential clang bison flex librea
                                          python3-dev libboost-all-dev cmake libeigen3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/cliffordwolf/icestorm.git icestorm \
-    && cd icestorm && git checkout 0ec00d8 \
+RUN git clone https://github.com/develone/icestorm.git icestorm \
+    && cd icestorm \
     && make -j$(nproc) \
     && make install \
     && cd .. && rm -rf icestorm
 
-RUN git clone https://github.com/YosysHQ/nextpnr nextpnr \
-    && cd nextpnr && git checkout c365dd1 \
+RUN git clone https://github.com/develone/nextpnr nextpnr \
+    && cd nextpnr \
     && cmake -DARCH=ice40 -DBUILD_GUI=OFF -DCMAKE_INSTALL_PREFIX=/usr/local . \
     && make -j$(nproc) \
     && make install \
     && cd .. && rm -rf nextpnr
 
-RUN git clone https://github.com/cliffordwolf/yosys.git yosys \
-    && cd yosys && git checkout 2daa568 \
+RUN git clone https://github.com/develone/yosys.git yosys \
+    && cd yosys \
     && make -j$(nproc) \
     && make install \
     && cd .. && rm -rf yosys
