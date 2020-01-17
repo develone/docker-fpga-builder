@@ -61,31 +61,28 @@ which in this case 395 packages plus yosyse, icestorm, and nextpnr.
 vidal@ws009:~/docker-fpga-builder/src$ docker run --rm -it docker-fpga-builder:latest
 
 Testing nextpnr, icepack, and icetime.
+git clone https://github.com/develone/catzip.git
 
-git clone https://github.com/develone/Test-Docker-FPGA-Builder.git
-cd Test-Docker-FPGA-Builder
+catzip Now has 2 scripts build-bin.sh & build-catzip-bin.sh, which are used to create
+
+cd catzip
+
+time ./build-bin.sh
+real	0m33.406s
+user	0m17.268s
+sys	0m0.752s
+
 time ./build-catzip-bin.sh
-3 warnings, 0 errors
-// Reading input .asc file..
-// Reading 8k chipdb file..
-// Creating timing netlist..
-// Timing estimate: 14.82 ns (67.47 MHz)
-// Checking 25.00 ns (40.00 MHz) clock constraint: PASSED.
+real	5m21.430s
+user	5m20.456s
+sys	0m0.720s
 
-real	6m12.682s
-user	6m12.076s
-sys	0m0.328s
-root@e7836b6c47e9:/module/Test-Docker-FPGA-Builder# scp catzip/catzip.bin devel@192.168.1.69:~/
-The authenticity of host '192.168.1.69 (192.168.1.69)' can't be established.
-ECDSA key fingerprint is SHA256:Bbi9VZShq4oPPLO/2sdVWLqT9dfufvoWSumdyGevmZk.
-Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added '192.168.1.69' (ECDSA) to the list of known hosts.
-devel@192.168.1.69's password: 
-catzip.bin                                    100%  132KB 131.9KB/s   00:00
-root@e7836b6c47e9:/module/Test-Docker-FPGA-Builder# md5sum catzip/catzip.bin 
-a17fef98a9a77a2d02da42d899c495a6  catzip/catzip.bin
- 
-devel@mypi3-16:~/testbuilds/catzip/sw/host $ sudo config_cat ../../rtl/catzip/catzip.bin 
+ls bin-files/
+blinky.bin  build-catzip.log  build.log  catzip.bin  clktest.bin  dimmer.bin  leddigits.bin  switch_leds.bi
+
+scp -r bin-files devel@192.168.1.69:~/testbuilds/catzip/
+
+devel@mypi3-16:~/testbuilds/catzip/sw/host $ sudo config_cat ../../bin-files/catzip.bin 
 
 GPIO 25 not exported, trying to export...
 GPIO 17 not exported, trying to export...
@@ -139,38 +136,4 @@ Create a docker image on Fedora 30 from a tar file.
 
 cat docker-fpga-docker.tar | docker load
 
-
-scp -r devel@192.168.1.69:~/testbuilds/catzip/rtl/leddigits .
-
-cd leddigits
-
-yosys -l simple.log -p 'synth_ice40 -blif leddigits.blif -json leddigits.json -top catboard' leddigits.v
-
-nextpnr-ice40 --seed 8 --freq 100 --hx8k --pcf leddigits.pcf --json leddigits.json --asc leddigits.asc
-
-Info: [ 21824,  22256) |*********+
-Info: [ 22256,  22688) |**********+
-Info: [ 22688,  23120) |************+
-Info: [ 23120,  23552) |************************************************************ 
-1 warning, 0 errors
-
-icepack leddigits.asc leddigits.bin
-root@179b92aa79dd:/module/leddigits# icetime -d hx8k -c 100 leddigits.asc
-// Reading input .asc file..
-// Reading 8k chipdb file..
-// Creating timing netlist..
-// Timing estimate: 9.96 ns (100.39 MHz)
-// Checking 10.00 ns (100.00 MHz) clock constraint: PASSED.
-
-root@179b92aa79dd:/module/leddigits# scp leddigits.bin devel@192.168.1.69:~/testbuilds/catzip/rtl/leddigits/ 
-devel@192.168.1.69's password: 
-Permission denied, please try again.
-devel@192.168.1.69's password: 
-leddigits.bin                                 100%  132KB 131.9KB/s   00:00    
-root@179b92aa79dd:/module/leddigits# md5sum leddigits.bin
-7245ed5a126a5b75b8120b6035ada23a  leddigits.bin
-devel@mypi3-16:~ $ md5sum testbuilds/catzip/rtl/leddigits/leddigits.bin
-7245ed5a126a5b75b8120b6035ada23a  testbuilds/catzip/rtl/leddigits/leddigits.bin
-
-   
-    
+ 
