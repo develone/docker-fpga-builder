@@ -125,10 +125,10 @@ https://bobcares.com/blog/move-docker-container-to-another-host/
  
 On Ubuntu ws009
 
-docker save docker-fpga-builder > docker-fpga-docker.tar
+docker save docker-fpga-builder:1.0 > docker-fpga-docker.tar
 
-md5sum docker-fpga-builder.tar 
-ff0bd56fc7bdf18e89edc5a521aa0b69  docker-fpga-builder.tar
+md5sum docker-fpga-docker.tar 
+d26a0e272cf03acb4d9a428e85440f5e  docker-fpga-docker.tar
 
 Transferred the docker-fpga-builder.tar to a Fedora 30 laptop 
 
